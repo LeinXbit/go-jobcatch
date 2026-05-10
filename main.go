@@ -10,10 +10,24 @@ import (
 	"time"
 )
 
-var cities = []string{"BeiJing","ShenZhen","ShangHai","GuangZhou","HangZhou"}
+var cities = []struct{
+	Name string
+	Code string
+}{
+	{"BeiJing", "010000"},
+	{"ShangHai", "020000"},
+	{"GuangZhou", "030000"},
+	{"ShenZhen", "040000"},
+}
 
 func main(){
-	ticker := time.NewTicker(30*time.Second)
+	fmt.Println("Go Job Catcher started...")
+	fmt.Println("Fetch from 51job")
+	fmt.Println("Target cities: BeiJing, ShangHai, GuangZhou, ShenZhen")
+	fmt.Println("Fetching every 30 seconds...")
+	fmt.Println("Press Ctrl+C to stop.")
+
+	ticker := time.NewTicker(30 * time.Second)
 	run()
 
 	for range ticker.C {
@@ -22,13 +36,13 @@ func main(){
 }
 
 func run(){
-	fmt.Println("Start fetching jobs...")
+	fmt.Println("\nStart fetching jobs...\n", time.Now().Format("2006-01-02 15:04:05"))
 	var wg sync.WaitGroup
-	jobChan := make(chan interface{}, 100)
+	jobChan := make(chan parser.JobResult, 100)
 
 	for _, city := range cities {
 		wg.Add(1)
-		go fetchCity(city, jobChan, &wg)
+		go fetchCity51(city.Name, city.Code, jobChan, &wg)
 	}
 
 	go func() {
@@ -38,35 +52,39 @@ func run(){
 
 	storage.ClearNewJobs()
 
-	for item := range jobChan {
-		if job, ok := item.(parser.JobResult); ok {
-			if job.Err != nil {
-				fmt.Printf("Error fetching jobs for %s: %v\n", job.City, job.Err)
-			}else {
-				for _, j := range job.Jobs {
-					if containGo(j.Title) && storage.AddIfNew(j) {
-						fmt.Printf("New job found: %s at %s in %s\n", j.Title, j.Company, j.City)
-						// Here you can add code to send notifications, e.g., email or push notifications
-						// sendNotification(j)
-					}
-				}
-				fmt.Printf("Finished processing jobs for %s\n, total %d\n", job.City,len(job.Jobs))
+	for result := range jobChan {
+		if result.Err != nil {
+			fmt.Printf("Error fetching %s: %v\n", result.City, result.Err)
+			continue
+		}
+
+		for _, job := range result.Jobs {
+			if storage.AddIfNew(job) {
+				fmt.Printf("New job found: [%s] %s at %s in %s\n", job.ID, job.Title, job.Company, job.City)
+				// Here you can add code to send notifications, e.g., email or push notifications
+				// sendNotification(job)
 			}
 		}
+		fmt.Printf("Finished processing %s, found %d jobs\n", result.City, len(result.Jobs))
 	}
+
 	newJobs := storage.GetNewJobs()
-	fmt.Printf("Total new jobs found: %d\n", len(newJobs))
+	if len(newJobs) > 0 {
+		fmt.Printf("Total new jobs found: %d\n", len(newJobs))
+	}else {
+		fmt.Println("No new jobs found.")
+	}
 }
 
-func fetchCity(city string, ch chan<- interface{}, wg *sync.WaitGroup) {
+func fetchCity51(cityName, cityCode string, ch chan<- parser.JobResult, wg *sync.WaitGroup) {
 	defer wg.Done()
-	data, err := fetcher.Fetch(city)
+	data, err := fetcher.FetchJobs51(cityCode, 1)
 	if err != nil {
-		ch <- &parser.JobResult{City: city, Err: err}
+		ch <- parser.JobResult{City: cityName, Err: err}
 		return
 	}
-	jobs, err := parser.ParseJobs(data)
-	ch <- &parser.JobResult{City: city, Jobs: jobs, Err: err}
+	jobs, err := parser.ParseJobs51(data, cityName)
+	ch <- parser.JobResult{City: cityName, Jobs: jobs, Err: err}
 }
 
 func containGo(title string) bool {
