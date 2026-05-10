@@ -1,34 +1,29 @@
 package main
 
 import (
-	"strings"
+	"go-catch/config"
 	"fmt"
 	"sync"
 	"go-catch/fetcher"
 	"go-catch/parser"
 	"go-catch/storage"
 	"time"
+	"strings"
 )
 
-var cities = []struct{
-	Name string
-	Code string
-}{
-	{"BeiJing", "010000"},
-	{"ShangHai", "020000"},
-	{"GuangZhou", "030000"},
-	{"ShenZhen", "040000"},
-}
-
 func main(){
+	cfg := config.GetConfig()
+
 	fmt.Println("Go Job Catcher started...")
-	fmt.Println("Fetch from 51job")
-	fmt.Println("Target cities: BeiJing, ShangHai, GuangZhou, ShenZhen")
-	fmt.Println("Fetching every 30 seconds...")
+	fmt.Println("Target cities:")
+	for _, city := range cfg.Cities {
+		fmt.Printf("%s ", city.Name)
+	}
+	fmt.Println("Fetching every", cfg.FetchInterval, "seconds...")
 	fmt.Println("Press Ctrl+C to stop.")
 
-	ticker := time.NewTicker(30 * time.Second)
-	run()
+	ticker := time.NewTicker(cfg.FetchInterval)
+	run()	
 
 	for range ticker.C {
 		run()
@@ -36,11 +31,13 @@ func main(){
 }
 
 func run(){
+	cfg := config.GetConfig()
+
 	fmt.Println("\nStart fetching jobs...\n", time.Now().Format("2006-01-02 15:04:05"))
 	var wg sync.WaitGroup
 	jobChan := make(chan parser.JobResult, 100)
 
-	for _, city := range cities {
+	for _, city := range cfg.Cities {
 		wg.Add(1)
 		go fetchCity51(city.Name, city.Code, jobChan, &wg)
 	}
@@ -78,7 +75,10 @@ func run(){
 
 func fetchCity51(cityName, cityCode string, ch chan<- parser.JobResult, wg *sync.WaitGroup) {
 	defer wg.Done()
-	data, err := fetcher.FetchJobs51(cityCode, 1)
+
+	cfg := config.GetConfig()
+
+	data, err := fetcher.FetchJobs51(cityCode, 1, cfg.RequestTimeout)
 	if err != nil {
 		ch <- parser.JobResult{City: cityName, Err: err}
 		return
