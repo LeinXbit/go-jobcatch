@@ -49,7 +49,7 @@ func main(){
 		jobNotifier,
 		cities,
 		cfg.FetchInterval,
-		1,
+		1, // page limit, currently set to 1 for testing
 	)
 	logger.Info("monitor initialized")
 	logger.Infof("fetch interval: %v", cfg.FetchInterval)
