@@ -2,11 +2,12 @@ package main
 
 import (
 	"go-catch/config"
-	"fmt"
-	"sync"
+	"go-catch/logger"
+	"go-catch/model"
 	"go-catch/fetcher"
 	"go-catch/parser"
 	"go-catch/storage"
+	"sync"
 	"time"
 	"strings"
 )
@@ -14,13 +15,13 @@ import (
 func main(){
 	cfg := config.GetConfig()
 
-	fmt.Println("Go Job Catcher started...")
-	fmt.Println("Target cities:")
+	logger.Info("Go Job Catcher started...")
+	logger.Infof("Target cities:%d ", len(cfg.Cities))
 	for _, city := range cfg.Cities {
-		fmt.Printf("%s ", city.Name)
+		logger.Infof("%s (%s)", city.Name, city.Code)
 	}
-	fmt.Println("Fetching every", cfg.FetchInterval, "seconds...")
-	fmt.Println("Press Ctrl+C to stop.")
+	logger.Infof("Fetching every %v seconds...", cfg.FetchInterval)
+	logger.Info("Press Ctrl+C to stop.")
 
 	ticker := time.NewTicker(cfg.FetchInterval)
 	run()	
@@ -33,7 +34,7 @@ func main(){
 func run(){
 	cfg := config.GetConfig()
 
-	fmt.Println("\nStart fetching jobs...\n", time.Now().Format("2006-01-02 15:04:05"))
+	logger.Infof("\nStart fetching jobs...\n", time.Now().Format("2006-01-02 15:04:05"))
 	var wg sync.WaitGroup
 	jobChan := make(chan parser.JobResult, 100)
 
@@ -51,25 +52,25 @@ func run(){
 
 	for result := range jobChan {
 		if result.Err != nil {
-			fmt.Printf("Error fetching %s: %v\n", result.City, result.Err)
+			logger.Errorf("Error fetching %s: %v\n", result.City, result.Err)
 			continue
 		}
 
 		for _, job := range result.Jobs {
 			if storage.AddIfNew(job) {
-				fmt.Printf("New job found: [%s] %s at %s in %s\n", job.ID, job.Title, job.Company, job.City)
+				logger.Infof("New job found: [%s] %s at %s in %s\n", job.ID, job.Title, job.Company, job.City)
 				// Here you can add code to send notifications, e.g., email or push notifications
 				// sendNotification(job)
 			}
 		}
-		fmt.Printf("Finished processing %s, found %d jobs\n", result.City, len(result.Jobs))
+		logger.Infof("Finished processing %s, found %d jobs\n", result.City, len(result.Jobs))
 	}
 
 	newJobs := storage.GetNewJobs()
 	if len(newJobs) > 0 {
-		fmt.Printf("Total new jobs found: %d\n", len(newJobs))
+		logger.Infof("Total new jobs found: %d\n", len(newJobs))
 	}else {
-		fmt.Println("No new jobs found.")
+		logger.Info("No new jobs found.")
 	}
 }
 
@@ -78,13 +79,27 @@ func fetchCity51(cityName, cityCode string, ch chan<- parser.JobResult, wg *sync
 
 	cfg := config.GetConfig()
 
+	// 只抓取第一页，后续可以增加分页抓取
 	data, err := fetcher.FetchJobs51(cityCode, 1, cfg.RequestTimeout)
 	if err != nil {
 		ch <- parser.JobResult{City: cityName, Err: err}
 		return
 	}
+
 	jobs, err := parser.ParseJobs51(data, cityName)
-	ch <- parser.JobResult{City: cityName, Jobs: jobs, Err: err}
+	if err != nil {
+		ch <- parser.JobResult{City: cityName, Err: err}
+		return
+	}
+
+	var goJobs []model.Job
+	for _, jobs := range jobs {
+		if containGo(jobs.Title) {
+			goJobs = append(goJobs, jobs)
+		}
+	}
+
+	ch <- parser.JobResult{City: cityName, Jobs: goJobs, Err: err}
 }
 
 func containGo(title string) bool {
