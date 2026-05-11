@@ -3,6 +3,7 @@ package notifier
 import (
 	"go-catch/model"
 	"go-catch/logger"
+	"strings"
 )
 
 type ConsoleNotifier struct{}
@@ -12,7 +13,22 @@ func NewConsoleNotifier() *ConsoleNotifier {
 }
 
 func (n *ConsoleNotifier) NotifyNewJob(job model.Job) {
-	logger.Infof("Find new job: %s at %s in %s",job.Title, job.Company, job.City)
+	separator := strings.Repeat("=", 50)
+	logger.Info(separator)
+
+	if job.Salary != "" {
+		logger.Infof("salary range: %s\n", job.Salary)
+	}else {
+		logger.Infof("negotiable salary\n")
+	}
+
+	logger.Infof("company: %s\n", job.Company)
+
+	if job.URL != "" {
+		logger.Infof("job URL: %s\n", job.URL)
+	}
+
+	logger.Info(separator)
 }
 
 func (n *ConsoleNotifier) NotifyBatch(jobs []model.Job) {

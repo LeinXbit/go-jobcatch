@@ -104,7 +104,12 @@ func (m *Monitor) run() {
 		totalJobs += len(jobs)
 	}
 
-	logger.Infof("Finished checking. Total jobs found: %d, new jobs: %d", totalJobs, len(m.storage.GetNewJobs()))
+	newJobs := m.storage.GetNewJobs()
+	if len(newJobs) > 0 {
+		logger.Infof("Total new jobs found: %d ,added Go development positions :%d", totalJobs, len(newJobs))
+	}else {
+		logger.Infof("No new jobs found.")
+	}
 }
 
 func (m *Monitor) fetchCity(city City, ch chan<- []model.Job, wg *sync.WaitGroup) {

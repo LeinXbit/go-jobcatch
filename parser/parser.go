@@ -28,6 +28,11 @@ func (p *Job51Parser) Parse(data []byte, city string) ([]model.Job, error) {
 		title := strings.TrimSpace(s.Find(".jname at").Text())
 		company := strings.TrimSpace(s.Find(".cname at").Text())
 		salary := strings.TrimSpace(s.Find(".sal").Text())
+		jobHref, exists := s.Find(".jname at").Attr("href")
+		jobURL := ""
+		if exists {
+			jobURL = "https://search.51job.com" + jobHref
+		}
 		jobID, exists := s.Attr("id")
 
 		if title !="" && p.matchKeywords(title) {
@@ -41,6 +46,8 @@ func (p *Job51Parser) Parse(data []byte, city string) ([]model.Job, error) {
 				Title:     title + " " + salary,
 				Company:   company,
 				City:      city,
+				Salary:    salary,
+				URL:       jobURL,
 			}
 			jobs = append(jobs, job)
 		}

@@ -5,4 +5,6 @@ type Job struct {
 	Title     string `json:"title"`
 	Company   string `json:"company"`
 	City	  string `json:"city"`
+	Salary    string `json:"salary"`
+	URL       string `json:"url"`
 }
