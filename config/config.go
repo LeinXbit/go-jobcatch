@@ -1,31 +1,31 @@
 package config
 
-import (
-	"time"
-)
+import "time"
 
 type AppConfig struct {
-	Cities         []CityConfig
-	FetchInterval  time.Duration
-	RequestTimeout time.Duration
+    Cities         []CityConfig
+    FetchInterval  time.Duration
+    RequestTimeout time.Duration
+    EnableProxy    bool // 是否启用代理池
 }
 
 type CityConfig struct {
-	Name string
-	Code string
+    Name string
+    Code string
 }
 
 var Default = AppConfig{
-	Cities: []CityConfig{
-		{Name:"BeiJing", Code: "010000"},
-		{Name:"ShangHai", Code: "020000"},
-		{Name:"GuangZhou", Code: "030000"},
-		{Name:"ShenZhen", Code: "040000"},
-	},
-	FetchInterval:  30 * time.Second,
-	RequestTimeout: 10 * time.Second,
+    Cities: []CityConfig{
+        {Name: "北京", Code: "010000"},
+        {Name: "上海", Code: "020000"},
+        {Name: "广州", Code: "030000"},
+        {Name: "深圳", Code: "040000"},
+    },
+    FetchInterval:  30 * time.Second,
+    RequestTimeout: 15 * time.Second,
+    EnableProxy:    false, // 默认关闭，需要时改为 true
 }
 
 func GetConfig() AppConfig {
-	return Default
+    return Default
 }

@@ -1,0 +1,62 @@
+INFO: 2026/05/11 22:25:20 ==========================================
+INFO: 2026/05/11 22:25:20 Go岗位监控系统 v2.0 - 低耦合架构版
+INFO: 2026/05/11 22:25:20 ==========================================
+INFO: 2026/05/11 22:25:20 ✓ 抓取器初始化完成（51job数据源）
+INFO: 2026/05/11 22:25:20 正在初始化代理池...
+INFO: 2026/05/11 22:25:20 正在从免费代理源获取代理...
+INFO: 2026/05/11 22:26:00 [WARN] 获取免费代理失败: <nil>
+INFO: 2026/05/11 22:26:00 [WARN] ⚠ 代理池为空，将使用直连
+INFO: 2026/05/11 22:26:00 ✓ 解析器初始化完成（关键词过滤: [go golang Go Golang]）
+INFO: 2026/05/11 22:26:00 ✓ 存储器初始化完成（内存去重）
+INFO: 2026/05/11 22:26:00 ✓ 通知器初始化完成（控制台输出）
+INFO: 2026/05/11 22:26:00 ✓ 加载城市配置: 4个城市
+INFO: 2026/05/11 22:26:00   - 北京 (代码: 010000)
+INFO: 2026/05/11 22:26:00   - 上海 (代码: 020000)
+INFO: 2026/05/11 22:26:00   - 广州 (代码: 030000)
+INFO: 2026/05/11 22:26:00   - 深圳 (代码: 040000)
+INFO: 2026/05/11 22:26:00 ✓ 监控器核心初始化完成
+INFO: 2026/05/11 22:26:00 ==========================================
+INFO: 2026/05/11 22:26:00 抓取间隔: 30s
+INFO: 2026/05/11 22:26:00 代理模式: 已启用
+INFO: 2026/05/11 22:26:00 按 Ctrl+C 停止监控
+INFO: 2026/05/11 22:26:00 ==========================================
+INFO: 2026/05/11 22:26:00 Starting job monitor...
+INFO: 2026/05/11 22:26:00 Monitoring cities: 4
+INFO: 2026/05/11 22:26:00  - 北京 (010000)
+INFO: 2026/05/11 22:26:00  - 上海 (020000)
+INFO: 2026/05/11 22:26:00  - 广州 (030000)
+INFO: 2026/05/11 22:26:00  - 深圳 (040000)
+INFO: 2026/05/11 22:26:00 Checking for new jobs at 2026-05-11 22:26:00...
+INFO: 2026/05/11 22:26:00 No new jobs found.
+INFO: 2026/05/11 23:33:15 ==========================================
+INFO: 2026/05/11 23:33:15 Go岗位监控系统 v2.0 - 低耦合架构版
+INFO: 2026/05/11 23:33:15 ==========================================
+INFO: 2026/05/11 23:33:15 ✓ 抓取器初始化完成（51job数据源）
+INFO: 2026/05/11 23:33:15 正在初始化代理池...
+INFO: 2026/05/11 23:33:25 ✓ 代理池初始化成功，共 1 个代理
+INFO: 2026/05/11 23:33:25 ✓ 解析器初始化完成
+INFO: 2026/05/11 23:33:25 ✓ 存储器初始化完成
+INFO: 2026/05/11 23:33:25 ✓ 通知器初始化完成
+INFO: 2026/05/11 23:33:25 ✓ 加载城市配置: 4个城市
+INFO: 2026/05/11 23:33:25 ==========================================
+INFO: 2026/05/11 23:33:25 抓取间隔: 30s
+INFO: 2026/05/11 23:33:25 按 Ctrl+C 停止监控
+INFO: 2026/05/11 23:33:25 ==========================================
+INFO: 2026/05/11 23:33:25 Starting job monitor...
+INFO: 2026/05/11 23:33:25 Monitoring cities: 4
+INFO: 2026/05/11 23:33:25  - 北京 (010000)
+INFO: 2026/05/11 23:33:25  - 上海 (020000)
+INFO: 2026/05/11 23:33:25  - 广州 (030000)
+INFO: 2026/05/11 23:33:25  - 深圳 (040000)
+INFO: 2026/05/11 23:33:25 Checking for new jobs at 2026-05-11 23:33:25...
+ERROR: 2026/05/11 23:33:29 Failed to fetch data for 广州 (page 1): 代理请求失败: 重试 3 次后失败: Get "https://search.51job.com/list/030000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+ERROR: 2026/05/11 23:33:29 Failed to fetch data for 上海 (page 1): 代理请求失败: 重试 3 次后失败: Get "https://search.51job.com/list/020000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+ERROR: 2026/05/11 23:33:29 Failed to fetch data for 深圳 (page 1): 代理请求失败: 重试 3 次后失败: Get "https://search.51job.com/list/040000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+ERROR: 2026/05/11 23:33:29 Failed to fetch data for 北京 (page 1): 代理请求失败: 重试 3 次后失败: Get "https://search.51job.com/list/010000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+INFO: 2026/05/11 23:33:29 No new jobs found.
+INFO: 2026/05/11 23:33:55 Checking for new jobs at 2026-05-11 23:33:55...
+ERROR: 2026/05/11 23:33:59 Failed to fetch data for 广州 (page 1): 代理请求失败: 重试 3 次后失败: Get "https://search.51job.com/list/030000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+ERROR: 2026/05/11 23:33:59 Failed to fetch data for 深圳 (page 1): 代理请求失败: 重试 3 次后失败: Get "https://search.51job.com/list/040000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+ERROR: 2026/05/11 23:33:59 Failed to fetch data for 上海 (page 1): 代理请求失败: 重试 3 次后失败: Get "https://search.51job.com/list/020000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+ERROR: 2026/05/11 23:33:59 Failed to fetch data for 北京 (page 1): 代理请求失败: 重试 3 次后失败: Get "https://search.51job.com/list/010000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+INFO: 2026/05/11 23:33:59 No new jobs found.

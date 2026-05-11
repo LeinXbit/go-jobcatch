@@ -54,3 +54,21 @@ func Errorf(format string, args ...interface{}) {
 	fmt.Println("ERROR:", msg)
 	errorLog.Println(msg)
 }
+
+// Warn 记录警告日志
+func Warn(msg string) {
+    fmt.Println("[WARN]", msg)
+    // 如果有 infoLog，也可以写入文件
+    if infoLog != nil {
+        infoLog.Println("[WARN] " + msg)
+    }
+}
+
+// Warnf 格式化记录警告日志
+func Warnf(format string, args ...interface{}) {
+    msg := fmt.Sprintf(format, args...)
+    fmt.Println("[WARN]", msg)
+    if infoLog != nil {
+        infoLog.Println("[WARN] " + msg)
+    }
+}
