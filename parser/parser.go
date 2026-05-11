@@ -8,14 +8,16 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type JobResult struct {
-	City string
-	Jobs []model.Job
-	Err error
+type Job51Parser struct{
+	Keywords []string
 }
 
-func ParseJobs51(htmlData []byte, city string) ([]model.Job, error) {
-	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(htmlData))
+func NewJob51Parser(keywords []string) *Job51Parser {
+	return &Job51Parser{Keywords: keywords}
+}
+
+func (p *Job51Parser) Parse(data []byte, city string) ([]model.Job, error) {
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(data))
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +30,7 @@ func ParseJobs51(htmlData []byte, city string) ([]model.Job, error) {
 		salary := strings.TrimSpace(s.Find(".sal").Text())
 		jobID, exists := s.Attr("id")
 
-		if title !="" && strings.Contains(strings.ToLower(title), "go") {
+		if title !="" && p.matchKeywords(title) {
 			id := jobID
 			if !exists {
 				id = strconv.Itoa(i) // Fallback to index if no ID
@@ -47,3 +49,12 @@ func ParseJobs51(htmlData []byte, city string) ([]model.Job, error) {
 	return jobs, nil
 }
 
+func (p *Job51Parser) matchKeywords(title string) bool {
+	lowerTitle := strings.ToLower(title)
+	for _, keyword := range p.Keywords {
+		if strings.Contains(lowerTitle, strings.ToLower(keyword)) {
+			return true
+		}
+	}
+	return false	
+}

@@ -5,5 +5,4 @@ type Job struct {
 	Title     string `json:"title"`
 	Company   string `json:"company"`
 	City	  string `json:"city"`
-	CreatedAt string `json:"created_at"`
 }

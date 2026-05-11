@@ -1,0 +1,25 @@
+INFO: 2026/05/11 18:47:54 go monitor v2.0
+INFO: 2026/05/11 18:47:54 fetcher initialized
+INFO: 2026/05/11 18:47:54 parser initialized : [go golang Go Golang]
+INFO: 2026/05/11 18:47:54 storage initialized
+INFO: 2026/05/11 18:47:54 notifier initialized
+INFO: 2026/05/11 18:47:54 cities initialized : 4
+INFO: 2026/05/11 18:47:54  - BeiJing (010000)
+INFO: 2026/05/11 18:47:54  - ShangHai (020000)
+INFO: 2026/05/11 18:47:54  - GuangZhou (030000)
+INFO: 2026/05/11 18:47:54  - ShenZhen (040000)
+INFO: 2026/05/11 18:47:54 monitor initialized
+INFO: 2026/05/11 18:47:54 catch interval: 30s
+INFO: 2026/05/11 18:47:54 press Ctrl+C to stop
+INFO: 2026/05/11 18:47:54 Starting job monitor...
+INFO: 2026/05/11 18:47:54 Monitoring cities: 4
+INFO: 2026/05/11 18:47:54  - BeiJing (010000)
+INFO: 2026/05/11 18:47:54  - ShangHai (020000)
+INFO: 2026/05/11 18:47:54  - GuangZhou (030000)
+INFO: 2026/05/11 18:47:54  - ShenZhen (040000)
+INFO: 2026/05/11 18:47:54 Fetch interval: 30s
+INFO: 2026/05/11 18:47:54 press Ctrl+C to stop
+INFO: 2026/05/11 18:47:54 Checking for new jobs at 2026-05-11 18:47:54...
+INFO: 2026/05/11 18:47:55 Finished checking. Total jobs found: 0, new jobs: 0
+INFO: 2026/05/11 18:48:24 Checking for new jobs at 2026-05-11 18:48:24...
+INFO: 2026/05/11 18:48:25 Finished checking. Total jobs found: 0, new jobs: 0

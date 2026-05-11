@@ -5,36 +5,42 @@ import (
 	"sync"
 )
 
-var (
-	seen    = make(map[string]bool)
-	mutex   sync.RWMutex
+type MemoryStorage struct {
+	seen    map[string]bool
 	newJobs []model.Job
-)
+	mutex   sync.RWMutex
+}
 
-func AddIfNew(job model.Job) bool {
-	mutex.RLock()
-	exist := seen[job.ID]
-	mutex.RUnlock()
+func NewMemoryStorage() *MemoryStorage {
+	return &MemoryStorage{
+		seen:    make(map[string]bool),
+	}
+}
 
-	if exist {
+func (s *MemoryStorage) AddIfNew(job model.Job) bool {
+	s.mutex.RLock()
+	exists := s.seen[job.ID]
+	s.mutex.RUnlock()
+
+	if exists {
 		return false
 	}
 
-	mutex.Lock()
-	seen[job.ID] = true
-	newJobs = append(newJobs, job)
-	mutex.Unlock()
+	s.mutex.Lock()
+	s.seen[job.ID] = true
+	s.newJobs = append(s.newJobs, job)
+	s.mutex.Unlock()
 	return true
 }
 
-func GetNewJobs() []model.Job {
-	mutex.RLock()
-	defer mutex.RUnlock()
-	return newJobs
+func (s *MemoryStorage) GetNewJobs() []model.Job {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+	return s.newJobs
 }
 
-func ClearNewJobs() {
-	mutex.Lock()
-	newJobs = []model.Job{}
-	mutex.Unlock()
+func (s *MemoryStorage) ClearNewJobs() {
+	s.mutex.Lock()
+	s.newJobs = []model.Job{}
+	s.mutex.Unlock()
 }
