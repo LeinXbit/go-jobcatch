@@ -6,9 +6,9 @@ import "time"
 type ProxyMode string
 
 const (
-    ModeDirect ProxyMode = "direct" // 直连模式
-    ModeSingle ProxyMode = "single" // 单代理模式
-    ModePool   ProxyMode = "pool"   // 代理池模式
+    ModeDirect ProxyMode = "direct"
+    ModeSingle ProxyMode = "single"
+    ModePool   ProxyMode = "pool"
 )
 
 // AppConfig 应用配置
@@ -18,10 +18,15 @@ type AppConfig struct {
     RequestTimeout time.Duration
 
     // 代理配置
-    ProxyMode     ProxyMode // 代理模式: direct, single, pool
-    ProxyURL      string    // 单代理地址，如 "http://127.0.0.1:7890"
-    ProxySources  []string  // 代理池源 URL 列表
-    ProxyPoolSize int       // 代理池最大代理数量（0 表示使用全部）
+    ProxyMode     ProxyMode
+    ProxyURL      string
+    ProxySources  []string
+    ProxyPoolSize int
+
+    // 日志配置
+    LogLevel    string
+    LogEncoding string
+    LogFile     string
 }
 
 // CityConfig 城市配置
@@ -41,18 +46,21 @@ var Default = AppConfig{
     FetchInterval:  30 * time.Second,
     RequestTimeout: 15 * time.Second,
 
-    // 代理配置（默认使用代理池）
+    // 代理配置
     ProxyMode:     ModeDirect,
     ProxyURL:      "http://127.0.0.1:7890",
-    ProxyPoolSize: 10, // 最多使用 10 个代理
+    ProxyPoolSize: 10,
     ProxySources: []string{
         "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=5000",
-        "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
     },
+
+    // 日志配置
+    LogLevel:    "info",
+    LogEncoding: "console",
+    LogFile:     "logs/app.log",
 }
 
 // GetConfig 获取配置
 func GetConfig() AppConfig {
-    // TODO: 从 YAML 文件读取配置（可选）
     return Default
 }

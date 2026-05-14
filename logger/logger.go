@@ -1,74 +1,92 @@
 package logger
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"time"
+    "os"
+
+    "go.uber.org/zap"
+    "go.uber.org/zap/zapcore"
 )
 
-var (
-	infoLog  *log.Logger
-	errorLog *log.Logger
-)
+// 全局 Logger 实例
+var Log *zap.Logger
 
-func init() {
-	// 创建日志目录
-	if err := os.MkdirAll("logs", 0755); err != nil {
-		log.Fatal("Failed to create log directory:", err)
-	}
-
-	// 创建当天的日志文件
-	today := time.Now().Format("2006-01-02")
-	logFile, err := os.OpenFile(fmt.Sprintf("logs/%s.log", today), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatal("Failed to create log file:", err)
-	}
-
-	infoLog = log.New(logFile, "INFO: ", log.Ldate|log.Ltime)
-	errorLog = log.New(logFile, "ERROR: ", log.Ldate|log.Ltime)
+// Config 日志配置
+type Config struct {
+    Level      string // debug, info, warn, error
+    Encoding   string // console, json
+    OutputPath string // 日志文件路径，空表示只输出到控制台
 }
 
-// Info 记录信息日志	
-func Info(msg string) {
-	fmt.Println(msg)
-	infoLog.Println(msg)
+// Init 初始化日志
+func Init(cfg Config) error {
+    // 日志级别
+    var level zapcore.Level
+    switch cfg.Level {
+    case "debug":
+        level = zapcore.DebugLevel
+    case "info":
+        level = zapcore.InfoLevel
+    case "warn":
+        level = zapcore.WarnLevel
+    case "error":
+        level = zapcore.ErrorLevel
+    default:
+        level = zapcore.InfoLevel
+    }
+
+    // 编码器配置
+    encoderConfig := zapcore.EncoderConfig{
+        TimeKey:        "time",
+        LevelKey:       "level",
+        NameKey:        "logger",
+        CallerKey:      "caller",
+        FunctionKey:    zapcore.OmitKey,
+        MessageKey:     "msg",
+        StacktraceKey:  "stacktrace",
+        LineEnding:     zapcore.DefaultLineEnding,
+        EncodeLevel:    zapcore.CapitalLevelEncoder,
+        EncodeTime:     zapcore.ISO8601TimeEncoder,
+        EncodeDuration: zapcore.SecondsDurationEncoder,
+        EncodeCaller:   zapcore.ShortCallerEncoder,
+    }
+
+    // 编码器
+    var encoder zapcore.Encoder
+    if cfg.Encoding == "json" {
+        encoder = zapcore.NewJSONEncoder(encoderConfig)
+    } else {
+        encoder = zapcore.NewConsoleEncoder(encoderConfig)
+    }
+
+    // 输出目标
+    cores := []zapcore.Core{
+        zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), level),
+    }
+
+    // 文件输出
+    if cfg.OutputPath != "" {
+        file, err := os.OpenFile(cfg.OutputPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+        if err != nil {
+            return err
+        }
+        cores = append(cores, zapcore.NewCore(encoder, zapcore.AddSync(file), level))
+    }
+
+    // 合并输出
+    core := zapcore.NewTee(cores...)
+
+    // 创建 Logger
+    Log = zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
+
+    return nil
 }
 
-// Infof 记录格式化信息日志
-func Infof(format string, args ...interface{}) {
-	msg := fmt.Sprintf(format, args...)
-	fmt.Println(msg)
-	infoLog.Println(msg)
-}
-
-// Error 记录错误日志
-func Error(msg string) {
-	fmt.Println("ERROR:", msg)
-	errorLog.Println(msg)
-}
-
-// Errorf 记录格式化错误日志
-func Errorf(format string, args ...interface{}) {
-	msg := fmt.Sprintf(format, args...)
-	fmt.Println("ERROR:", msg)
-	errorLog.Println(msg)
-}
-
-// Warn 记录警告日志
-func Warn(msg string) {
-    fmt.Println("[WARN]", msg)
-    // 如果有 infoLog，也可以写入文件
-    if infoLog != nil {
-        infoLog.Println("[WARN] " + msg)
+// Sync 刷新日志缓冲区
+func Sync() {
+    if Log != nil {
+        _ = Log.Sync()
     }
 }
 
-// Warnf 格式化记录警告日志
-func Warnf(format string, args ...interface{}) {
-    msg := fmt.Sprintf(format, args...)
-    fmt.Println("[WARN]", msg)
-    if infoLog != nil {
-        infoLog.Println("[WARN] " + msg)
-    }
-}
+// 直接使用 zap 方法，不再封装
+// 调用方式：logger.Log.Info("msg", zap.String("key", "value"))

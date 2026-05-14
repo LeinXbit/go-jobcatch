@@ -1,42 +1,67 @@
 package notifier
 
 import (
-	"go-catch/model"
-	"go-catch/logger"
-	"strings"
+    "go-catch/logger"
+    "go-catch/model"
+    "go.uber.org/zap"
+    "strings"
 )
 
 type ConsoleNotifier struct{}
 
 func NewConsoleNotifier() *ConsoleNotifier {
-	return &ConsoleNotifier{}
+    return &ConsoleNotifier{}
 }
 
 func (n *ConsoleNotifier) NotifyNewJob(job model.Job) {
-	separator := strings.Repeat("=", 50)
-	logger.Info(separator)
+    separator := strings.Repeat("=", 50)
 
-	if job.Salary != "" {
-		logger.Infof("salary range: %s\n", job.Salary)
-	}else {
-		logger.Infof("negotiable salary\n")
-	}
+    // 输出分隔线
+    logger.Log.Info(separator)
 
-	logger.Infof("company: %s\n", job.Company)
+    // 输出岗位标题
+    logger.Log.Info("New job found",
+        zap.String("title", job.Title),
+        zap.String("city", job.City),
+    )
 
-	if job.URL != "" {
-		logger.Infof("job URL: %s\n", job.URL)
-	}
+    // 输出薪资
+    if job.Salary != "" {
+        logger.Log.Info("Salary",
+            zap.String("range", job.Salary),
+        )
+    } else {
+        logger.Log.Info("Salary",
+            zap.String("range", "negotiable"),
+        )
+    }
 
-	logger.Info(separator)
+    // 输出公司名称
+    logger.Log.Info("Company",
+        zap.String("name", job.Company),
+    )
+
+    // 输出岗位链接
+    if job.URL != "" {
+        logger.Log.Info("Job URL",
+            zap.String("url", job.URL),
+        )
+    }
+
+    // 输出分隔线
+    logger.Log.Info(separator)
 }
 
 func (n *ConsoleNotifier) NotifyBatch(jobs []model.Job) {
-	if len(jobs) == 0 {
-		return
-	}
-	logger.Infof("Total new jobs found: %d\n", len(jobs))
-	for _,job := range jobs {
-		n.NotifyNewJob(job)
-	}
+    if len(jobs) == 0 {
+        return
+    }
+
+    logger.Log.Info("Batch notification",
+        zap.Int("count", len(jobs)),
+    )
+
+    for _, job := range jobs {
+        n.NotifyNewJob(job)
+    }
 }

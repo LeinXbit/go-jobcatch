@@ -2,10 +2,12 @@ package core
 
 import (
     "context"
-    "go-catch/logger"
-    "go-catch/model"
     "sync"
     "time"
+
+    "go-catch/logger"
+    "go-catch/model"
+    "go.uber.org/zap"
 )
 
 // Fetcher 抓取器接口
@@ -71,14 +73,17 @@ func NewMonitor(
 
 // Start 启动监控（支持 context 取消）
 func (m *Monitor) Start(ctx context.Context) {
-    logger.Info("Starting job monitor...")
-    logger.Infof("Monitoring cities: %d", len(m.cities))
+    logger.Log.Info("Starting job monitor...")
+    logger.Log.Info("Monitoring cities", zap.Int("count", len(m.cities)))
     for _, c := range m.cities {
-        logger.Infof(" - %s (%s)", c.Name, c.Code)
+        logger.Log.Info("City configured",
+            zap.String("name", c.Name),
+            zap.String("code", c.Code),
+        )
     }
 
     ticker := time.NewTicker(m.interval)
-    
+
     // 立即执行一次
     m.run(ctx)
 
@@ -87,9 +92,9 @@ func (m *Monitor) Start(ctx context.Context) {
         case <-ticker.C:
             m.run(ctx)
         case <-ctx.Done():
-            logger.Info("收到取消信号，监控器正在关闭...")
+            logger.Log.Info("收到取消信号，监控器正在关闭...")
             ticker.Stop()
-            logger.Info("监控器已关闭")
+            logger.Log.Info("监控器已关闭")
             return
         }
     }
@@ -97,7 +102,9 @@ func (m *Monitor) Start(ctx context.Context) {
 
 // run 执行一次抓取周期
 func (m *Monitor) run(ctx context.Context) {
-    logger.Infof("Checking for new jobs at %s...", time.Now().Format("2006-01-02 15:04:05"))
+    logger.Log.Info("Checking for new jobs",
+        zap.String("time", time.Now().Format("2006-01-02 15:04:05")),
+    )
 
     var wg sync.WaitGroup
     jobChan := make(chan []model.Job, 100)
@@ -126,9 +133,14 @@ func (m *Monitor) run(ctx context.Context) {
 
     newJobs := m.storage.GetNewJobs()
     if len(newJobs) > 0 {
-        logger.Infof("Total jobs fetched: %d, new Go jobs: %d", totalJobs, len(newJobs))
+        logger.Log.Info("Fetch cycle completed",
+            zap.Int("total_jobs", totalJobs),
+            zap.Int("new_jobs", len(newJobs)),
+        )
     } else {
-        logger.Info("No new jobs found.")
+        logger.Log.Info("No new jobs found",
+            zap.Int("total_jobs", totalJobs),
+        )
     }
 }
 
@@ -142,25 +154,35 @@ func (m *Monitor) fetchCity(ctx context.Context, city City, ch chan<- []model.Jo
         // 检查 context 是否已取消
         select {
         case <-ctx.Done():
-            logger.Warnf("任务被取消，停止抓取 %s", city.Name)
+            logger.Log.Warn("Task cancelled, stopping fetch",
+                zap.String("city", city.Name),
+            )
             return
         default:
         }
 
         // 创建带超时的 context（单次请求超时 30 秒）
         reqCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
-        
+
         data, err := m.fetcher.Fetch(reqCtx, city.Code, page)
         cancel() // 立即释放资源
-        
+
         if err != nil {
-            logger.Errorf("Failed to fetch data for %s (page %d): %v", city.Name, page, err)
+            logger.Log.Error("Failed to fetch data",
+                zap.String("city", city.Name),
+                zap.Int("page", page),
+                zap.Error(err),
+            )
             break
         }
 
         jobs, err := m.parser.Parse(data, city.Name)
         if err != nil {
-            logger.Errorf("Failed to parse data for %s (page %d): %v", city.Name, page, err)
+            logger.Log.Error("Failed to parse data",
+                zap.String("city", city.Name),
+                zap.Int("page", page),
+                zap.Error(err),
+            )
             continue
         }
 
@@ -169,14 +191,21 @@ func (m *Monitor) fetchCity(ctx context.Context, city City, ch chan<- []model.Jo
         }
 
         allJobs = append(allJobs, jobs...)
-        logger.Infof("Fetched %d jobs for %s (page %d)", len(jobs), city.Name, page)
+        logger.Log.Info("Fetched jobs",
+            zap.String("city", city.Name),
+            zap.Int("page", page),
+            zap.Int("count", len(jobs)),
+        )
 
         // 避免请求过快
         time.Sleep(500 * time.Millisecond)
     }
 
     if len(allJobs) > 0 {
-        logger.Infof("Total %d jobs fetched for %s", len(allJobs), city.Name)
+        logger.Log.Info("Total jobs fetched for city",
+            zap.String("city", city.Name),
+            zap.Int("total", len(allJobs)),
+        )
         ch <- allJobs
     }
 }

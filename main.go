@@ -14,31 +14,45 @@ import (
     "go-catch/parser"
     "go-catch/storage"
     "go-catch/pkg/proxy"
+    "go.uber.org/zap"
 )
 
 func main() {
     cfg := config.GetConfig()
 
-    logger.Info("==========================================")
-    logger.Info("Go岗位监控系统 v2.0 - 低耦合架构版")
-    logger.Info("==========================================")
+    // 初始化 zap 日志
+    err := logger.Init(logger.Config{
+        Level:      cfg.LogLevel,
+        Encoding:   cfg.LogEncoding,
+        OutputPath: cfg.LogFile,
+    })
+    if err != nil {
+        panic("初始化日志失败: " + err.Error())
+    }
+    defer logger.Sync()
+
+    logger.Log.Info("==========================================")
+    logger.Log.Info("Go岗位监控系统 v2.0 - zap日志版")
+    logger.Log.Info("==========================================")
 
     // 创建抓取器
     jobFetcher := fetcher.NewJob51Fetcher(cfg.RequestTimeout)
-    logger.Info("✓ 抓取器初始化完成")
+    logger.Log.Info("抓取器初始化完成")
 
     // 根据配置选择代理模式
     switch cfg.ProxyMode {
     case config.ModeSingle:
         // 单代理模式
-        logger.Infof("使用单代理模式: %s", cfg.ProxyURL)
+        logger.Log.Info("使用单代理模式",
+            zap.String("proxy_url", cfg.ProxyURL),
+        )
         proxyClient := proxy.NewSingleProxyClient(cfg.ProxyURL, cfg.RequestTimeout)
         jobFetcher.SetProxyClient(proxyClient)
-        logger.Info("✓ 单代理配置完成")
+        logger.Log.Info("单代理配置完成")
 
     case config.ModePool:
         // 代理池模式
-        logger.Info("正在初始化代理池...")
+        logger.Log.Info("正在初始化代理池...")
 
         // 获取代理列表
         var proxyList []*proxy.Proxy
@@ -48,7 +62,9 @@ func main() {
             source := proxy.NewFreeProxySource("https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=5000")
             proxies, err := source.Fetch()
             if err != nil || len(proxies) == 0 {
-                logger.Warnf("获取免费代理失败: %v，使用默认代理", err)
+                logger.Log.Warn("获取免费代理失败，使用默认代理",
+                    zap.Error(err),
+                )
                 proxyList = []*proxy.Proxy{
                     {Host: "127.0.0.1", Port: 7890},
                 }
@@ -69,30 +85,32 @@ func main() {
             proxyClient := proxy.NewProxyPoolClient(proxyList, cfg.RequestTimeout, 3)
             if proxyClient != nil {
                 jobFetcher.SetProxyClient(proxyClient)
-                logger.Infof("✓ 代理池配置完成，共 %d 个代理", len(proxyList))
+                logger.Log.Info("代理池配置完成",
+                    zap.Int("proxy_count", len(proxyList)),
+                )
             } else {
-                logger.Warn("代理池初始化失败，使用直连模式")
+                logger.Log.Warn("代理池初始化失败，使用直连模式")
             }
         } else {
-            logger.Warn("没有可用代理，使用直连模式")
+            logger.Log.Warn("没有可用代理，使用直连模式")
         }
 
     default:
         // 直连模式
-        logger.Info("使用直连模式")
+        logger.Log.Info("使用直连模式")
     }
 
     // 创建解析器
     jobParser := parser.NewJob51Parser([]string{"go", "golang"})
-    logger.Info("✓ 解析器初始化完成")
+    logger.Log.Info("解析器初始化完成")
 
     // 创建存储器
     jobStorage := storage.NewMemoryStorage()
-    logger.Info("✓ 存储器初始化完成")
+    logger.Log.Info("存储器初始化完成")
 
     // 创建通知器
     jobNotifier := notifier.NewConsoleNotifier()
-    logger.Info("✓ 通知器初始化完成")
+    logger.Log.Info("通知器初始化完成")
 
     // 转换城市配置
     cities := make([]core.City, len(cfg.Cities))
@@ -120,18 +138,22 @@ func main() {
 
     go func() {
         <-sigChan
-        logger.Info("收到中断信号，正在优雅关闭...")
+        logger.Log.Info("收到中断信号，正在优雅关闭...")
         cancel()
     }()
 
-    logger.Info("==========================================")
-    logger.Infof("抓取间隔: %v", cfg.FetchInterval)
-    logger.Info("按 Ctrl+C 停止监控")
-    logger.Infof("代理模式: %s", cfg.ProxyMode)
-    logger.Info("==========================================")
+    logger.Log.Info("==========================================")
+    logger.Log.Info("抓取间隔",
+        zap.Duration("interval", cfg.FetchInterval),
+    )
+    logger.Log.Info("按 Ctrl+C 停止监控")
+    logger.Log.Info("代理模式",
+        zap.String("mode", string(cfg.ProxyMode)),
+    )
+    logger.Log.Info("==========================================")
 
     // 启动监控
     monitor.Start(ctx)
 
-    logger.Info("程序已退出")
+    logger.Log.Info("程序已退出")
 }
