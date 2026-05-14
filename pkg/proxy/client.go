@@ -21,13 +21,21 @@ func NewHttpClient(pool *ProxyPool, config ProxyConfig) *HttpClient {
     }
 }
 
-// Do 执行请求（自动重试和切换代理）
+// Do 执行请求（支持 context）
 func (c *HttpClient) Do(req *http.Request) (*http.Response, error) {
+    ctx := req.Context()
     var lastErr error
 
     for i := 0; i < c.config.MaxRetry; i++ {
-        proxy := c.pool.GetNext()
+        // 检查 context 是否已取消
+        select {
+        case <-ctx.Done():
+            return nil, ctx.Err()
+        default:
+        }
 
+        proxy := c.pool.GetNext()
+        
         transport := &http.Transport{}
         if proxy != nil {
             transport.Proxy = http.ProxyURL(proxyToURL(proxy))
@@ -38,10 +46,9 @@ func (c *HttpClient) Do(req *http.Request) (*http.Response, error) {
             Transport: transport,
         }
 
-        // 复制请求
-        newReq := req.Clone(req.Context())
-
+        newReq := req.Clone(ctx)
         resp, err := client.Do(newReq)
+        
         if err == nil && resp.StatusCode < 500 {
             return resp, nil
         }
@@ -53,7 +60,6 @@ func (c *HttpClient) Do(req *http.Request) (*http.Response, error) {
             resp.Body.Close()
         }
 
-        // 等待后重试
         if i < c.config.MaxRetry-1 {
             time.Sleep(c.config.RetryInterval)
         }
