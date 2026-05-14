@@ -27,6 +27,14 @@ func (p *Proxy) String() string {
     return p.HostPort()
 }
 
+// URL 返回完整的代理 URL（新增）
+func (p *Proxy) URL() string {
+    if p.Username != "" && p.Password != "" {
+        return fmt.Sprintf("http://%s:%s@%s:%d", p.Username, p.Password, p.Host, p.Port)
+    }
+    return fmt.Sprintf("http://%s:%d", p.Host, p.Port)
+}
+
 // ProxyConfig 代理池配置
 type ProxyConfig struct {
     Enabled             bool          // 是否启用代理池

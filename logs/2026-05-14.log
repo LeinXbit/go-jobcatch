@@ -48,3 +48,146 @@ INFO: 2026/05/14 09:09:41 收到中断信号，正在优雅关闭...
 INFO: 2026/05/14 09:09:41 收到取消信号，监控器正在关闭...
 INFO: 2026/05/14 09:09:41 监控器已关闭
 INFO: 2026/05/14 09:09:41 程序已退出
+INFO: 2026/05/14 09:20:46 ==========================================
+INFO: 2026/05/14 09:20:46 Go岗位监控系统 v2.0 - 低耦合架构版
+INFO: 2026/05/14 09:20:46 ==========================================
+INFO: 2026/05/14 09:20:46 ✓ 抓取器初始化完成
+INFO: 2026/05/14 09:20:46 ✓ 解析器初始化完成
+INFO: 2026/05/14 09:20:46 ✓ 存储器初始化完成
+INFO: 2026/05/14 09:20:46 ✓ 通知器初始化完成
+INFO: 2026/05/14 09:20:46 ==========================================
+INFO: 2026/05/14 09:20:46 抓取间隔: 30s
+INFO: 2026/05/14 09:20:46 按 Ctrl+C 停止监控
+INFO: 2026/05/14 09:20:46 ==========================================
+INFO: 2026/05/14 09:20:46 Starting job monitor...
+INFO: 2026/05/14 09:20:46 Monitoring cities: 4
+INFO: 2026/05/14 09:20:46  - 北京 (010000)
+INFO: 2026/05/14 09:20:46  - 上海 (020000)
+INFO: 2026/05/14 09:20:46  - 广州 (030000)
+INFO: 2026/05/14 09:20:46  - 深圳 (040000)
+INFO: 2026/05/14 09:20:46 Checking for new jobs at 2026-05-14 09:20:46...
+INFO: 2026/05/14 09:20:47 No new jobs found.
+INFO: 2026/05/14 09:21:49 ==========================================
+INFO: 2026/05/14 09:21:49 Go岗位监控系统 v2.0 - 低耦合架构版
+INFO: 2026/05/14 09:21:49 ==========================================
+INFO: 2026/05/14 09:23:20 ✓ 抓取器初始化完成
+INFO: 2026/05/14 09:24:12 ✓ 解析器初始化完成
+INFO: 2026/05/14 09:24:47 ✓ 存储器初始化完成
+INFO: 2026/05/14 09:25:55 ✓ 通知器初始化完成
+INFO: 2026/05/14 09:26:17 ==========================================
+INFO: 2026/05/14 09:26:17 抓取间隔: 30s
+INFO: 2026/05/14 09:26:17 按 Ctrl+C 停止监控
+INFO: 2026/05/14 09:26:17 ==========================================
+INFO: 2026/05/14 09:26:34 Starting job monitor...
+INFO: 2026/05/14 09:26:34 Monitoring cities: 4
+INFO: 2026/05/14 09:26:34  - 北京 (010000)
+INFO: 2026/05/14 09:26:34  - 上海 (020000)
+INFO: 2026/05/14 09:26:34  - 广州 (030000)
+INFO: 2026/05/14 09:26:34  - 深圳 (040000)
+INFO: 2026/05/14 09:28:32 Checking for new jobs at 2026-05-14 09:28:32...
+ERROR: 2026/05/14 09:30:26 Failed to fetch data for 北京 (page 1): Get "https://search.51job.com/list/010000,000000,0000,00,9,99,Go,2,1.html": context deadline exceeded
+ERROR: 2026/05/14 09:30:29 Failed to fetch data for 上海 (page 1): Get "https://search.51job.com/list/020000,000000,0000,00,9,99,Go,2,1.html": context deadline exceeded
+INFO: 2026/05/14 09:30:46 No new jobs found.
+INFO: 2026/05/14 09:30:46 Checking for new jobs at 2026-05-14 09:30:46...
+INFO: 2026/05/14 09:31:31 No new jobs found.
+INFO: 2026/05/14 09:31:31 Checking for new jobs at 2026-05-14 09:31:31...
+ERROR: 2026/05/14 09:31:59 Failed to fetch data for 北京 (page 1): Get "https://search.51job.com/list/010000,000000,0000,00,9,99,Go,2,1.html": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+ERROR: 2026/05/14 09:32:03 Failed to fetch data for 上海 (page 1): Get "https://search.51job.com/list/020000,000000,0000,00,9,99,Go,2,1.html": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+ERROR: 2026/05/14 09:32:03 Failed to fetch data for 广州 (page 1): Get "https://search.51job.com/list/030000,000000,0000,00,9,99,Go,2,1.html": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+INFO: 2026/05/14 09:32:05 No new jobs found.
+INFO: 2026/05/14 09:32:05 Checking for new jobs at 2026-05-14 09:32:05...
+INFO: 2026/05/14 10:29:27 ==========================================
+INFO: 2026/05/14 10:29:27 Go岗位监控系统 v2.0 - 低耦合架构版
+INFO: 2026/05/14 10:29:27 ==========================================
+INFO: 2026/05/14 10:29:27 ✓ 抓取器初始化完成
+INFO: 2026/05/14 10:29:27 使用直连模式
+INFO: 2026/05/14 10:29:27 ✓ 解析器初始化完成
+INFO: 2026/05/14 10:29:27 ✓ 存储器初始化完成
+INFO: 2026/05/14 10:29:27 ✓ 通知器初始化完成
+INFO: 2026/05/14 10:29:27 ==========================================
+INFO: 2026/05/14 10:29:27 抓取间隔: 30s
+INFO: 2026/05/14 10:29:27 按 Ctrl+C 停止监控
+INFO: 2026/05/14 10:29:27 代理模式: 直连
+INFO: 2026/05/14 10:29:27 ==========================================
+INFO: 2026/05/14 10:29:27 Starting job monitor...
+INFO: 2026/05/14 10:29:27 Monitoring cities: 4
+INFO: 2026/05/14 10:29:27  - 北京 (010000)
+INFO: 2026/05/14 10:29:27  - 上海 (020000)
+INFO: 2026/05/14 10:29:27  - 广州 (030000)
+INFO: 2026/05/14 10:29:27  - 深圳 (040000)
+INFO: 2026/05/14 10:29:27 Checking for new jobs at 2026-05-14 10:29:27...
+INFO: 2026/05/14 10:29:27 No new jobs found.
+INFO: 2026/05/14 10:29:51 收到中断信号，正在优雅关闭...
+INFO: 2026/05/14 10:29:51 收到取消信号，监控器正在关闭...
+INFO: 2026/05/14 10:29:51 监控器已关闭
+INFO: 2026/05/14 10:29:51 程序已退出
+INFO: 2026/05/14 10:37:30 ==========================================
+INFO: 2026/05/14 10:37:30 Go岗位监控系统 v2.0 - 低耦合架构版
+INFO: 2026/05/14 10:37:30 ==========================================
+INFO: 2026/05/14 10:37:30 ✓ 抓取器初始化完成
+INFO: 2026/05/14 10:37:30 正在初始化代理池...
+INFO: 2026/05/14 10:37:43 ✓ 代理池初始化成功，共 2864 个代理
+INFO: 2026/05/14 10:37:43 ✓ 解析器初始化完成
+INFO: 2026/05/14 10:37:43 ✓ 存储器初始化完成
+INFO: 2026/05/14 10:37:43 ✓ 通知器初始化完成
+INFO: 2026/05/14 10:37:43 ==========================================
+INFO: 2026/05/14 10:37:43 抓取间隔: 30s
+INFO: 2026/05/14 10:37:43 按 Ctrl+C 停止监控
+INFO: 2026/05/14 10:37:43 代理模式: 代理池
+INFO: 2026/05/14 10:37:43 ==========================================
+INFO: 2026/05/14 10:37:43 Starting job monitor...
+INFO: 2026/05/14 10:37:43 Monitoring cities: 4
+INFO: 2026/05/14 10:37:43  - 北京 (010000)
+INFO: 2026/05/14 10:37:43  - 上海 (020000)
+INFO: 2026/05/14 10:37:43  - 广州 (030000)
+INFO: 2026/05/14 10:37:43  - 深圳 (040000)
+INFO: 2026/05/14 10:37:43 Checking for new jobs at 2026-05-14 10:37:43...
+ERROR: 2026/05/14 10:38:06 Failed to fetch data for 广州 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/030000,000000,0000,00,9,99,Go,2,1.html": Bad Request
+ERROR: 2026/05/14 10:38:07 Failed to fetch data for 深圳 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/040000,000000,0000,00,9,99,Go,2,1.html": malformed HTTP response "\x00[#(\x17\x85\xc4\r"
+ERROR: 2026/05/14 10:38:13 Failed to fetch data for 上海 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/020000,000000,0000,00,9,99,Go,2,1.html": context deadline exceeded
+INFO: 2026/05/14 10:38:13 No new jobs found.
+INFO: 2026/05/14 10:38:13 Checking for new jobs at 2026-05-14 10:38:13...
+ERROR: 2026/05/14 10:38:23 Failed to fetch data for 广州 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/030000,000000,0000,00,9,99,Go,2,1.html": Proxy Authentication Required
+ERROR: 2026/05/14 10:38:34 Failed to fetch data for 深圳 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/040000,000000,0000,00,9,99,Go,2,1.html": Proxy Authentication Required
+INFO: 2026/05/14 10:38:37 No new jobs found.
+INFO: 2026/05/14 10:38:43 Checking for new jobs at 2026-05-14 10:38:43...
+INFO: 2026/05/14 10:38:57 收到中断信号，正在优雅关闭...
+ERROR: 2026/05/14 10:38:57 Failed to fetch data for 深圳 (page 1): context canceled
+ERROR: 2026/05/14 10:38:57 Failed to fetch data for 广州 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/030000,000000,0000,00,9,99,Go,2,1.html": context canceled
+ERROR: 2026/05/14 10:38:57 Failed to fetch data for 北京 (page 1): context canceled
+ERROR: 2026/05/14 10:38:57 Failed to fetch data for 上海 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/020000,000000,0000,00,9,99,Go,2,1.html": context canceled
+INFO: 2026/05/14 10:38:57 No new jobs found.
+INFO: 2026/05/14 10:38:57 收到取消信号，监控器正在关闭...
+INFO: 2026/05/14 10:38:57 监控器已关闭
+INFO: 2026/05/14 10:38:57 程序已退出
+INFO: 2026/05/14 13:27:37 ==========================================
+INFO: 2026/05/14 13:27:37 Go岗位监控系统 v2.0 - 低耦合架构版
+INFO: 2026/05/14 13:27:37 ==========================================
+INFO: 2026/05/14 13:27:37 ✓ 抓取器初始化完成
+INFO: 2026/05/14 13:27:37 正在初始化代理池...
+INFO: 2026/05/14 13:27:47 [WARN] 获取免费代理失败: Get "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=5000": context deadline exceeded (Client.Timeout exceeded while awaiting headers)，使用默认代理
+INFO: 2026/05/14 13:27:47 ✓ 代理池配置完成，共 1 个代理
+INFO: 2026/05/14 13:27:47 ✓ 解析器初始化完成
+INFO: 2026/05/14 13:27:47 ✓ 存储器初始化完成
+INFO: 2026/05/14 13:27:47 ✓ 通知器初始化完成
+INFO: 2026/05/14 13:27:47 ==========================================
+INFO: 2026/05/14 13:27:47 抓取间隔: 30s
+INFO: 2026/05/14 13:27:47 按 Ctrl+C 停止监控
+INFO: 2026/05/14 13:27:47 代理模式: pool
+INFO: 2026/05/14 13:27:47 ==========================================
+INFO: 2026/05/14 13:27:47 Starting job monitor...
+INFO: 2026/05/14 13:27:47 Monitoring cities: 4
+INFO: 2026/05/14 13:27:47  - 北京 (010000)
+INFO: 2026/05/14 13:27:47  - 上海 (020000)
+INFO: 2026/05/14 13:27:47  - 广州 (030000)
+INFO: 2026/05/14 13:27:47  - 深圳 (040000)
+INFO: 2026/05/14 13:27:47 Checking for new jobs at 2026-05-14 13:27:47...
+ERROR: 2026/05/14 13:27:50 Failed to fetch data for 北京 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/010000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+ERROR: 2026/05/14 13:27:50 Failed to fetch data for 深圳 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/040000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+ERROR: 2026/05/14 13:27:50 Failed to fetch data for 广州 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/030000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+ERROR: 2026/05/14 13:27:50 Failed to fetch data for 上海 (page 1): 重试 3 次后失败: Get "https://search.51job.com/list/020000,000000,0000,00,9,99,Go,2,1.html": proxyconnect tcp: dial tcp 127.0.0.1:7890: connectex: No connection could be made because the target machine actively refused it.
+INFO: 2026/05/14 13:27:50 No new jobs found.
+INFO: 2026/05/14 13:28:03 收到中断信号，正在优雅关闭...
+INFO: 2026/05/14 13:28:03 收到取消信号，监控器正在关闭...
+INFO: 2026/05/14 13:28:03 监控器已关闭
+INFO: 2026/05/14 13:28:03 程序已退出

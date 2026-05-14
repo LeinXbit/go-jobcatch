@@ -8,31 +8,45 @@ import (
     "time"
 )
 
+// ProxyClient 代理客户端接口（fetcher 定义，不依赖外部）
+type ProxyClient interface {
+    DoRequest(ctx context.Context, url string) ([]byte, error)
+}
+
 // Job51Fetcher 51job 抓取器
 type Job51Fetcher struct {
-    Timeout  time.Duration
-    UseProxy bool
-    ProxyURL string
+    Timeout     time.Duration
+    proxyClient ProxyClient // 依赖接口，不依赖具体实现
 }
 
 // NewJob51Fetcher 创建抓取器
 func NewJob51Fetcher(timeout time.Duration) *Job51Fetcher {
     return &Job51Fetcher{
-        Timeout:  timeout,
-        UseProxy: false,
+        Timeout:     timeout,
+        proxyClient: nil,
     }
 }
 
-// SetProxy 设置代理
-func (f *Job51Fetcher) SetProxy(proxyURL string) {
-    f.ProxyURL = proxyURL
-    f.UseProxy = true
+// SetProxyClient 设置代理客户端（支持任意实现了 ProxyClient 接口的对象）
+func (f *Job51Fetcher) SetProxyClient(client ProxyClient) {
+    f.proxyClient = client
 }
 
-// Fetch 实现 core.Fetcher 接口（支持 context）
+// Fetch 实现 core.Fetcher 接口
 func (f *Job51Fetcher) Fetch(ctx context.Context, cityCode string, page int) ([]byte, error) {
     url := buildURL(cityCode, page)
 
+    // 如果设置了代理客户端，使用代理
+    if f.proxyClient != nil {
+        return f.proxyClient.DoRequest(ctx, url)
+    }
+
+    // 否则直连
+    return f.doDirectRequest(ctx, url)
+}
+
+// doDirectRequest 直连请求
+func (f *Job51Fetcher) doDirectRequest(ctx context.Context, url string) ([]byte, error) {
     req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
     if err != nil {
         return nil, err
@@ -40,11 +54,13 @@ func (f *Job51Fetcher) Fetch(ctx context.Context, cityCode string, page int) ([]
 
     setRequestHeaders(req)
 
-    client := createHTTPClient(f.Timeout, f.ProxyURL)
+    client := &http.Client{
+        Timeout: f.Timeout,
+    }
 
     resp, err := client.Do(req)
     if err != nil {
-        return nil, err
+        return nil, fmt.Errorf("直连请求失败: %w", err)
     }
     defer resp.Body.Close()
 
@@ -55,11 +71,6 @@ func (f *Job51Fetcher) Fetch(ctx context.Context, cityCode string, page int) ([]
     return io.ReadAll(resp.Body)
 }
 
-// buildURL 构建 URL
-func buildURL(cityCode string, page int) string {
-    return fmt.Sprintf("https://search.51job.com/list/%s,000000,0000,00,9,99,Go,2,%d.html", cityCode, page)
-}
-
 // setRequestHeaders 设置请求头
 func setRequestHeaders(req *http.Request) {
     req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
@@ -68,16 +79,7 @@ func setRequestHeaders(req *http.Request) {
     req.Header.Set("Connection", "keep-alive")
 }
 
-// createHTTPClient 创建 HTTP 客户端
-func createHTTPClient(timeout time.Duration, proxyURL string) *http.Client {
-    transport := &http.Transport{}
-    
-    if proxyURL != "" {
-        // 这里可以添加代理设置
-    }
-    
-    return &http.Client{
-        Timeout:   timeout,
-        Transport: transport,
-    }
+// buildURL 构建 51job 搜索 URL
+func buildURL(cityCode string, page int) string {
+    return fmt.Sprintf("https://search.51job.com/list/%s,000000,0000,00,9,99,Go,2,%d.html", cityCode, page)
 }

@@ -1,190 +1,118 @@
 package proxy
 
 import (
+    "context"
     "fmt"
+    "io"
     "net/http"
     "net/url"
     "sync"
     "time"
 )
 
-// ProxyPool 代理池
-type ProxyPool struct {
-    proxies   []*Proxy
-    mu        sync.RWMutex
-    current   int
-    config    ProxyConfig
-    sources   []ProxySource
-    stopChan  chan struct{}
+// ProxyPoolClient 代理池客户端（实现 fetcher.ProxyClient 接口）
+type ProxyPoolClient struct {
+    proxies  []*Proxy
+    current  int
+    mu       sync.Mutex
+    timeout  time.Duration
+    retryCnt int
 }
 
-// NewProxyPool 创建代理池
-func NewProxyPool(config ProxyConfig, sources []ProxySource) (*ProxyPool, error) {
-    pool := &ProxyPool{
-        proxies:  make([]*Proxy, 0),
-        config:   config,
-        sources:  sources,
-        stopChan: make(chan struct{}),
+// NewProxyPoolClient 创建代理池客户端
+func NewProxyPoolClient(proxies []*Proxy, timeout time.Duration, retryCnt int) *ProxyPoolClient {
+    if len(proxies) == 0 {
+        return nil
     }
-
-    // 首次获取代理
-    if err := pool.refresh(); err != nil {
-        return nil, err
+    return &ProxyPoolClient{
+        proxies:  proxies,
+        timeout:  timeout,
+        retryCnt: retryCnt,
+        current:  0,
     }
-
-    // 启动健康检查
-    if config.Enabled {
-        go pool.healthCheckLoop()
-        go pool.refreshLoop()
-    }
-
-    return pool, nil
 }
 
-// refresh 刷新代理列表
-func (p *ProxyPool) refresh() error {
-    allProxies := make([]*Proxy, 0)
-    seen := make(map[string]bool)
+// DoRequest 实现 fetcher.ProxyClient 接口（自动轮换代理）
+func (c *ProxyPoolClient) DoRequest(ctx context.Context, urlStr string) ([]byte, error) {
+    var lastErr error
 
-    for _, source := range p.sources {
-        proxies, err := source.Fetch()
-        if err != nil {
+    for i := 0; i < c.retryCnt; i++ {
+        // 检查 context 是否已取消
+        select {
+        case <-ctx.Done():
+            return nil, ctx.Err()
+        default:
+        }
+
+        proxy := c.nextProxy()
+        if proxy == nil {
             continue
         }
 
-        for _, proxy := range proxies {
-            key := proxy.HostPort()
-            if !seen[key] {
-                seen[key] = true
-                allProxies = append(allProxies, proxy)
-            }
+        data, err := c.requestWithProxy(ctx, urlStr, proxy)
+        if err == nil {
+            return data, nil
         }
-    }
 
-    if len(allProxies) == 0 {
-        return fmt.Errorf("没有获取到任何代理")
-    }
+        lastErr = err
 
-    p.mu.Lock()
-    p.proxies = allProxies
-    p.current = 0
-    p.mu.Unlock()
-
-    return nil
-}
-
-// refreshLoop 定期刷新代理列表
-func (p *ProxyPool) refreshLoop() {
-    ticker := time.NewTicker(10 * time.Minute)
-    defer ticker.Stop()
-
-    for {
+        // 等待后重试
         select {
-        case <-ticker.C:
-            p.refresh()
-        case <-p.stopChan:
-            return
+        case <-ctx.Done():
+            return nil, ctx.Err()
+        case <-time.After(time.Second):
         }
     }
+
+    return nil, fmt.Errorf("重试 %d 次后失败: %w", c.retryCnt, lastErr)
 }
 
-// healthCheckLoop 健康检查循环
-func (p *ProxyPool) healthCheckLoop() {
-    ticker := time.NewTicker(p.config.HealthCheckInterval)
-    defer ticker.Stop()
+// nextProxy 轮询获取下一个代理
+func (c *ProxyPoolClient) nextProxy() *Proxy {
+    c.mu.Lock()
+    defer c.mu.Unlock()
 
-    for {
-        select {
-        case <-ticker.C:
-            p.checkAll()
-        case <-p.stopChan:
-            return
-        }
-    }
-}
-
-// checkAll 检查所有代理
-func (p *ProxyPool) checkAll() {
-    p.mu.RLock()
-    proxies := make([]*Proxy, len(p.proxies))
-    copy(proxies, p.proxies)
-    p.mu.RUnlock()
-
-    for _, proxy := range proxies {
-        if !p.checkHealth(proxy) {
-            p.Remove(proxy)
-        }
-    }
-}
-
-// checkHealth 检查代理是否可用
-func (p *ProxyPool) checkHealth(proxy *Proxy) bool {
-    client := &http.Client{
-        Timeout: p.config.HealthCheckTimeout,
-        Transport: &http.Transport{
-            Proxy: http.ProxyURL(proxyToURL(proxy)),
-        },
-    }
-
-    resp, err := client.Get("https://httpbin.org/ip")
-    if err != nil {
-        return false
-    }
-    defer resp.Body.Close()
-
-    return resp.StatusCode == 200
-}
-
-// Remove 移除代理
-func (p *ProxyPool) Remove(proxy *Proxy) {
-    p.mu.Lock()
-    defer p.mu.Unlock()
-
-    for i, pr := range p.proxies {
-        if pr.Host == proxy.Host && pr.Port == proxy.Port {
-            p.proxies = append(p.proxies[:i], p.proxies[i+1:]...)
-            break
-        }
-    }
-}
-
-// GetNext 获取下一个可用代理（轮询）
-func (p *ProxyPool) GetNext() *Proxy {
-    p.mu.Lock()
-    defer p.mu.Unlock()
-
-    if len(p.proxies) == 0 {
+    if len(c.proxies) == 0 {
         return nil
     }
 
-    proxy := p.proxies[p.current]
-    p.current = (p.current + 1) % len(p.proxies)
+    proxy := c.proxies[c.current]
+    c.current = (c.current + 1) % len(c.proxies)
     return proxy
 }
 
-// Count 获取代理数量
-func (p *ProxyPool) Count() int {
-    p.mu.RLock()
-    defer p.mu.RUnlock()
-    return len(p.proxies)
-}
-
-// Stop 停止代理池
-func (p *ProxyPool) Stop() {
-    close(p.stopChan)
-}
-
-// proxyToURL 将代理转换为 URL
-func proxyToURL(proxy *Proxy) *url.URL {
-    if proxy.Username != "" && proxy.Password != "" {
-        return &url.URL{
-            Scheme: "http",
-            User:   url.UserPassword(proxy.Username, proxy.Password),
-            Host:   proxy.HostPort(),
-        }
+// requestWithProxy 使用指定代理发送请求
+func (c *ProxyPoolClient) requestWithProxy(ctx context.Context, urlStr string, proxy *Proxy) ([]byte, error) {
+    proxyURL, err := url.Parse(proxy.URL())
+    if err != nil {
+        return nil, err
     }
-    return &url.URL{
-        Scheme: "http",
-        Host:   proxy.HostPort(),
+
+    transport := &http.Transport{
+        Proxy: http.ProxyURL(proxyURL),
     }
+
+    client := &http.Client{
+        Timeout:   c.timeout,
+        Transport: transport,
+    }
+
+    req, err := http.NewRequestWithContext(ctx, "GET", urlStr, nil)
+    if err != nil {
+        return nil, err
+    }
+
+    req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+
+    resp, err := client.Do(req)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
+        return nil, fmt.Errorf("HTTP %d", resp.StatusCode)
+    }
+
+    return io.ReadAll(resp.Body)
 }
