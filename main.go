@@ -44,12 +44,12 @@ func main() {
         // 使用 Mock 数据源（用于测试和演示）
         jobFetcher = fetcher.NewMockFetcher(500 * time.Millisecond)
         jobParser = parser.NewMockParser()
-        logger.Log.Info("使用 Mock 数据源（模拟数据）")
+        logger.Log.Info("使用 Mock 数据源(模拟数据)")
     } else {
         // 使用真实数据源（51job）
         jobFetcher = fetcher.NewJob51Fetcher(cfg.RequestTimeout)
         jobParser = parser.NewJob51Parser([]string{"go", "golang"})
-        logger.Log.Info("使用真实数据源（51job）")
+        logger.Log.Info("使用真实数据源(51job)")
     }
     logger.Log.Info("抓取器初始化完成")
     logger.Log.Info("解析器初始化完成")

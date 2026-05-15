@@ -203,3 +203,159 @@
 2026-05-15T15:02:51.374+0800	INFO	go-catch/main.go:205	收到取消信号，监控器正在关闭...
 2026-05-15T15:02:51.374+0800	INFO	go-catch/main.go:205	监控器已关闭
 2026-05-15T15:02:51.374+0800	INFO	runtime/proc.go:290	程序已退出
+2026-05-15T17:00:49.794+0800	INFO	runtime/proc.go:290	==========================================
+2026-05-15T17:00:49.809+0800	INFO	runtime/proc.go:290	Go岗位监控系统 v2.0 - zap日志版
+2026-05-15T17:00:49.809+0800	INFO	runtime/proc.go:290	==========================================
+2026-05-15T17:00:49.809+0800	INFO	runtime/proc.go:290	使用 Mock 数据源（模拟数据）
+2026-05-15T17:00:49.809+0800	INFO	runtime/proc.go:290	抓取器初始化完成
+2026-05-15T17:00:49.810+0800	INFO	runtime/proc.go:290	解析器初始化完成
+2026-05-15T17:00:49.810+0800	INFO	runtime/proc.go:290	正在连接 MySQL...
+2026-05-15T17:00:49.919+0800	INFO	storage/mysql.go:54	已加载历史岗位到缓存	{"count": 0}
+2026-05-15T17:00:49.920+0800	INFO	go-catch/main.go:134	MySQL 存储初始化成功
+2026-05-15T17:00:49.920+0800	INFO	runtime/proc.go:290	MySQL 存储初始化完成
+2026-05-15T17:00:49.920+0800	INFO	runtime/proc.go:290	通知器初始化完成
+2026-05-15T17:00:49.920+0800	INFO	runtime/proc.go:290	==========================================
+2026-05-15T17:00:49.920+0800	INFO	runtime/proc.go:290	抓取间隔	{"interval": 30}
+2026-05-15T17:00:49.920+0800	INFO	runtime/proc.go:290	按 Ctrl+C 停止监控
+2026-05-15T17:00:49.920+0800	INFO	runtime/proc.go:290	数据源	{"source": "mock"}
+2026-05-15T17:00:49.920+0800	INFO	runtime/proc.go:290	==========================================
+2026-05-15T17:00:49.920+0800	INFO	go-catch/main.go:205	Starting job monitor...
+2026-05-15T17:00:49.920+0800	INFO	go-catch/main.go:205	Monitoring cities	{"count": 4}
+2026-05-15T17:00:49.920+0800	INFO	go-catch/main.go:205	City configured	{"name": "北京", "code": "010000"}
+2026-05-15T17:00:49.920+0800	INFO	go-catch/main.go:205	City configured	{"name": "上海", "code": "020000"}
+2026-05-15T17:00:49.921+0800	INFO	go-catch/main.go:205	City configured	{"name": "广州", "code": "030000"}
+2026-05-15T17:00:49.921+0800	INFO	go-catch/main.go:205	City configured	{"name": "深圳", "code": "040000"}
+2026-05-15T17:00:49.921+0800	INFO	core/monitor.go:88	Checking for new jobs	{"time": "2026-05-15 17:00:49"}
+2026-05-15T17:00:50.422+0800	INFO	runtime/asm_amd64.s:1771	Fetched jobs	{"city": "广州", "page": 1, "count": 5}
+2026-05-15T17:00:50.423+0800	INFO	runtime/asm_amd64.s:1771	Fetched jobs	{"city": "北京", "page": 1, "count": 5}
+2026-05-15T17:00:50.423+0800	INFO	runtime/asm_amd64.s:1771	Fetched jobs	{"city": "上海", "page": 1, "count": 5}
+2026-05-15T17:00:50.423+0800	INFO	runtime/asm_amd64.s:1771	Fetched jobs	{"city": "深圳", "page": 1, "count": 5}
+2026-05-15T17:00:50.924+0800	INFO	runtime/asm_amd64.s:1771	Total jobs fetched for city	{"city": "北京", "total": 5}
+2026-05-15T17:00:50.924+0800	INFO	runtime/asm_amd64.s:1771	Total jobs fetched for city	{"city": "广州", "total": 5}
+2026-05-15T17:00:50.925+0800	INFO	runtime/asm_amd64.s:1771	Total jobs fetched for city	{"city": "上海", "total": 5}
+2026-05-15T17:00:50.925+0800	INFO	runtime/asm_amd64.s:1771	Total jobs fetched for city	{"city": "深圳", "total": 5}
+2026-05-15T17:00:50.945+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:50.946+0800	INFO	core/monitor.go:128	New job found	{"title": "Go后端开发工程师", "city": "北京"}
+2026-05-15T17:00:50.946+0800	INFO	core/monitor.go:128	Salary	{"range": "25-40K·16薪"}
+2026-05-15T17:00:50.946+0800	INFO	core/monitor.go:128	Company	{"name": "字节跳动"}
+2026-05-15T17:00:50.946+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/001"}
+2026-05-15T17:00:50.946+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:50.956+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:50.956+0800	INFO	core/monitor.go:128	New job found	{"title": "Golang架构师", "city": "北京"}
+2026-05-15T17:00:50.957+0800	INFO	core/monitor.go:128	Salary	{"range": "35-50K·15薪"}
+2026-05-15T17:00:50.958+0800	INFO	core/monitor.go:128	Company	{"name": "腾讯"}
+2026-05-15T17:00:50.958+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/002"}
+2026-05-15T17:00:50.959+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:50.975+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:50.975+0800	INFO	core/monitor.go:128	New job found	{"title": "资深Go开发工程师", "city": "北京"}
+2026-05-15T17:00:50.975+0800	INFO	core/monitor.go:128	Salary	{"range": "30-45K·16薪"}
+2026-05-15T17:00:50.975+0800	INFO	core/monitor.go:128	Company	{"name": "阿里巴巴"}
+2026-05-15T17:00:50.976+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/003"}
+2026-05-15T17:00:50.976+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:50.991+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:50.991+0800	INFO	core/monitor.go:128	New job found	{"title": "Go云原生开发", "city": "北京"}
+2026-05-15T17:00:50.991+0800	INFO	core/monitor.go:128	Salary	{"range": "28-42K·14薪"}
+2026-05-15T17:00:50.991+0800	INFO	core/monitor.go:128	Company	{"name": "华为"}
+2026-05-15T17:00:50.991+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/004"}
+2026-05-15T17:00:50.991+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.006+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.006+0800	INFO	core/monitor.go:128	New job found	{"title": "后端开发工程师(Go)", "city": "北京"}
+2026-05-15T17:00:51.006+0800	INFO	core/monitor.go:128	Salary	{"range": "26-38K·15薪"}
+2026-05-15T17:00:51.006+0800	INFO	core/monitor.go:128	Company	{"name": "美团"}
+2026-05-15T17:00:51.006+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/005"}
+2026-05-15T17:00:51.006+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.030+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.030+0800	INFO	core/monitor.go:128	New job found	{"title": "Go后端开发工程师", "city": "广州"}
+2026-05-15T17:00:51.031+0800	INFO	core/monitor.go:128	Salary	{"range": "25-40K·16薪"}
+2026-05-15T17:00:51.031+0800	INFO	core/monitor.go:128	Company	{"name": "字节跳动"}
+2026-05-15T17:00:51.032+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/001"}
+2026-05-15T17:00:51.032+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.062+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.063+0800	INFO	core/monitor.go:128	New job found	{"title": "Golang架构师", "city": "广州"}
+2026-05-15T17:00:51.063+0800	INFO	core/monitor.go:128	Salary	{"range": "35-50K·15薪"}
+2026-05-15T17:00:51.063+0800	INFO	core/monitor.go:128	Company	{"name": "腾讯"}
+2026-05-15T17:00:51.063+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/002"}
+2026-05-15T17:00:51.063+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.090+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.091+0800	INFO	core/monitor.go:128	New job found	{"title": "资深Go开发工程师", "city": "广州"}
+2026-05-15T17:00:51.091+0800	INFO	core/monitor.go:128	Salary	{"range": "30-45K·16薪"}
+2026-05-15T17:00:51.092+0800	INFO	core/monitor.go:128	Company	{"name": "阿里巴巴"}
+2026-05-15T17:00:51.092+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/003"}
+2026-05-15T17:00:51.092+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.110+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.110+0800	INFO	core/monitor.go:128	New job found	{"title": "Go云原生开发", "city": "广州"}
+2026-05-15T17:00:51.112+0800	INFO	core/monitor.go:128	Salary	{"range": "28-42K·14薪"}
+2026-05-15T17:00:51.112+0800	INFO	core/monitor.go:128	Company	{"name": "华为"}
+2026-05-15T17:00:51.112+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/004"}
+2026-05-15T17:00:51.112+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.134+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.134+0800	INFO	core/monitor.go:128	New job found	{"title": "后端开发工程师(Go)", "city": "广州"}
+2026-05-15T17:00:51.134+0800	INFO	core/monitor.go:128	Salary	{"range": "26-38K·15薪"}
+2026-05-15T17:00:51.134+0800	INFO	core/monitor.go:128	Company	{"name": "美团"}
+2026-05-15T17:00:51.134+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/005"}
+2026-05-15T17:00:51.135+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.148+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.149+0800	INFO	core/monitor.go:128	New job found	{"title": "Go后端开发工程师", "city": "上海"}
+2026-05-15T17:00:51.149+0800	INFO	core/monitor.go:128	Salary	{"range": "25-40K·16薪"}
+2026-05-15T17:00:51.149+0800	INFO	core/monitor.go:128	Company	{"name": "字节跳动"}
+2026-05-15T17:00:51.149+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/001"}
+2026-05-15T17:00:51.150+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.160+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.160+0800	INFO	core/monitor.go:128	New job found	{"title": "Golang架构师", "city": "上海"}
+2026-05-15T17:00:51.160+0800	INFO	core/monitor.go:128	Salary	{"range": "35-50K·15薪"}
+2026-05-15T17:00:51.160+0800	INFO	core/monitor.go:128	Company	{"name": "腾讯"}
+2026-05-15T17:00:51.160+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/002"}
+2026-05-15T17:00:51.161+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.182+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.183+0800	INFO	core/monitor.go:128	New job found	{"title": "资深Go开发工程师", "city": "上海"}
+2026-05-15T17:00:51.183+0800	INFO	core/monitor.go:128	Salary	{"range": "30-45K·16薪"}
+2026-05-15T17:00:51.184+0800	INFO	core/monitor.go:128	Company	{"name": "阿里巴巴"}
+2026-05-15T17:00:51.184+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/003"}
+2026-05-15T17:00:51.184+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.197+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.197+0800	INFO	core/monitor.go:128	New job found	{"title": "Go云原生开发", "city": "上海"}
+2026-05-15T17:00:51.197+0800	INFO	core/monitor.go:128	Salary	{"range": "28-42K·14薪"}
+2026-05-15T17:00:51.197+0800	INFO	core/monitor.go:128	Company	{"name": "华为"}
+2026-05-15T17:00:51.197+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/004"}
+2026-05-15T17:00:51.197+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.206+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.206+0800	INFO	core/monitor.go:128	New job found	{"title": "后端开发工程师(Go)", "city": "上海"}
+2026-05-15T17:00:51.206+0800	INFO	core/monitor.go:128	Salary	{"range": "26-38K·15薪"}
+2026-05-15T17:00:51.206+0800	INFO	core/monitor.go:128	Company	{"name": "美团"}
+2026-05-15T17:00:51.206+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/005"}
+2026-05-15T17:00:51.206+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.215+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.215+0800	INFO	core/monitor.go:128	New job found	{"title": "Go后端开发工程师", "city": "深圳"}
+2026-05-15T17:00:51.215+0800	INFO	core/monitor.go:128	Salary	{"range": "25-40K·16薪"}
+2026-05-15T17:00:51.215+0800	INFO	core/monitor.go:128	Company	{"name": "字节跳动"}
+2026-05-15T17:00:51.215+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/001"}
+2026-05-15T17:00:51.215+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.235+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.235+0800	INFO	core/monitor.go:128	New job found	{"title": "Golang架构师", "city": "深圳"}
+2026-05-15T17:00:51.235+0800	INFO	core/monitor.go:128	Salary	{"range": "35-50K·15薪"}
+2026-05-15T17:00:51.235+0800	INFO	core/monitor.go:128	Company	{"name": "腾讯"}
+2026-05-15T17:00:51.235+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/002"}
+2026-05-15T17:00:51.236+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.246+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.246+0800	INFO	core/monitor.go:128	New job found	{"title": "资深Go开发工程师", "city": "深圳"}
+2026-05-15T17:00:51.246+0800	INFO	core/monitor.go:128	Salary	{"range": "30-45K·16薪"}
+2026-05-15T17:00:51.246+0800	INFO	core/monitor.go:128	Company	{"name": "阿里巴巴"}
+2026-05-15T17:00:51.246+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/003"}
+2026-05-15T17:00:51.246+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.256+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.256+0800	INFO	core/monitor.go:128	New job found	{"title": "Go云原生开发", "city": "深圳"}
+2026-05-15T17:00:51.256+0800	INFO	core/monitor.go:128	Salary	{"range": "28-42K·14薪"}
+2026-05-15T17:00:51.256+0800	INFO	core/monitor.go:128	Company	{"name": "华为"}
+2026-05-15T17:00:51.256+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/004"}
+2026-05-15T17:00:51.256+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.269+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.269+0800	INFO	core/monitor.go:128	New job found	{"title": "后端开发工程师(Go)", "city": "深圳"}
+2026-05-15T17:00:51.270+0800	INFO	core/monitor.go:128	Salary	{"range": "26-38K·15薪"}
+2026-05-15T17:00:51.270+0800	INFO	core/monitor.go:128	Company	{"name": "美团"}
+2026-05-15T17:00:51.270+0800	INFO	core/monitor.go:128	Job URL	{"url": "https://example.com/job/005"}
+2026-05-15T17:00:51.270+0800	INFO	core/monitor.go:128	==================================================
+2026-05-15T17:00:51.270+0800	INFO	core/monitor.go:88	Fetch cycle completed	{"total_jobs": 20, "new_jobs": 20}
+2026-05-15T17:00:58.302+0800	INFO	runtime/asm_amd64.s:1771	收到中断信号，正在优雅关闭...
+2026-05-15T17:00:58.303+0800	INFO	go-catch/main.go:205	收到取消信号，监控器正在关闭...
+2026-05-15T17:00:58.303+0800	INFO	go-catch/main.go:205	监控器已关闭
+2026-05-15T17:00:58.303+0800	INFO	runtime/proc.go:290	程序已退出
