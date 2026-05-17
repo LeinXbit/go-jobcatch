@@ -19,6 +19,16 @@ const (
     DataSourceMock DataSource = "mock" // 模拟数据（用于测试和演示）
 )
 
+// RedisConfig Redis 配置
+type RedisConfig struct {
+    Enabled  bool   // 是否启用 Redis
+    Host     string // Redis 地址
+    Port     int    // Redis 端口
+    Password string // Redis 密码（无密码留空）
+    DB       int    // 数据库编号（0-15）
+    TTL      int    // 缓存过期时间（秒）
+}
+
 // AppConfig 应用配置
 type AppConfig struct {
     Cities         []CityConfig
@@ -41,6 +51,9 @@ type AppConfig struct {
     DBUser       string
     DBPassword   string
     DBName       string
+
+    // Redis 配置
+    Redis RedisConfig
 
     // 日志配置
     LogLevel    string
@@ -65,8 +78,8 @@ var Default = AppConfig{
     FetchInterval:  30 * time.Second,
     RequestTimeout: 15 * time.Second,
 
-    // 数据源配置（默认使用真实数据源）
-    DataSource: DataSourceMock,
+    // 数据源配置（默认使用模拟数据）
+    DataSource: DataSourceReal,
 
     // 代理配置
     ProxyMode:     ModeDirect,
@@ -83,6 +96,16 @@ var Default = AppConfig{
     DBUser:     "root",
     DBPassword: "123456",
     DBName:     "job_monitor",
+
+    // Redis 配置（默认关闭）
+    Redis: RedisConfig{
+        Enabled:  false,      // 默认关闭，需要时改为 true
+        Host:     "127.0.0.1",
+        Port:     6379,
+        Password: "",
+        DB:       0,
+        TTL:      3600, // 1 小时
+    },
 
     // 日志配置
     LogLevel:    "info",

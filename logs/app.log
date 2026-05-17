@@ -359,3 +359,31 @@
 2026-05-15T17:00:58.303+0800	INFO	go-catch/main.go:205	收到取消信号，监控器正在关闭...
 2026-05-15T17:00:58.303+0800	INFO	go-catch/main.go:205	监控器已关闭
 2026-05-15T17:00:58.303+0800	INFO	runtime/proc.go:290	程序已退出
+2026-05-17T21:56:55.404+0800	INFO	runtime/proc.go:290	==========================================
+2026-05-17T21:56:55.424+0800	INFO	runtime/proc.go:290	Go岗位监控系统 v2.0 - zap日志版
+2026-05-17T21:56:55.424+0800	INFO	runtime/proc.go:290	==========================================
+2026-05-17T21:56:55.424+0800	INFO	runtime/proc.go:290	使用真实数据源(51job)
+2026-05-17T21:56:55.425+0800	INFO	runtime/proc.go:290	抓取器初始化完成
+2026-05-17T21:56:55.425+0800	INFO	runtime/proc.go:290	解析器初始化完成
+2026-05-17T21:56:55.425+0800	INFO	runtime/proc.go:290	使用直连模式
+2026-05-17T21:56:55.425+0800	INFO	runtime/proc.go:290	使用内存存储
+2026-05-17T21:56:55.425+0800	INFO	runtime/proc.go:290	通知器初始化完成
+2026-05-17T21:56:55.425+0800	INFO	runtime/proc.go:290	==========================================
+2026-05-17T21:56:55.425+0800	INFO	runtime/proc.go:290	抓取间隔	{"interval": 30}
+2026-05-17T21:56:55.425+0800	INFO	runtime/proc.go:290	按 Ctrl+C 停止监控
+2026-05-17T21:56:55.425+0800	INFO	runtime/proc.go:290	数据源	{"source": "real"}
+2026-05-17T21:56:55.425+0800	INFO	runtime/proc.go:290	代理模式	{"mode": "direct"}
+2026-05-17T21:56:55.427+0800	INFO	runtime/proc.go:290	存储模式	{"mysql": false, "redis": false}
+2026-05-17T21:56:55.427+0800	INFO	runtime/proc.go:290	==========================================
+2026-05-17T21:56:55.427+0800	INFO	go-catch/main.go:238	Starting job monitor...
+2026-05-17T21:56:55.427+0800	INFO	go-catch/main.go:238	Monitoring cities	{"count": 4}
+2026-05-17T21:56:55.427+0800	INFO	go-catch/main.go:238	City configured	{"name": "北京", "code": "010000"}
+2026-05-17T21:56:55.427+0800	INFO	go-catch/main.go:238	City configured	{"name": "上海", "code": "020000"}
+2026-05-17T21:56:55.429+0800	INFO	go-catch/main.go:238	City configured	{"name": "广州", "code": "030000"}
+2026-05-17T21:56:55.429+0800	INFO	go-catch/main.go:238	City configured	{"name": "深圳", "code": "040000"}
+2026-05-17T21:56:55.429+0800	INFO	core/monitor.go:88	Checking for new jobs	{"time": "2026-05-17 21:56:55"}
+2026-05-17T21:56:56.988+0800	INFO	core/monitor.go:88	No new jobs found	{"total_jobs": 0}
+2026-05-17T21:57:05.064+0800	INFO	runtime/asm_amd64.s:1771	收到中断信号，正在优雅关闭...
+2026-05-17T21:57:05.065+0800	INFO	go-catch/main.go:238	收到取消信号，监控器正在关闭...
+2026-05-17T21:57:05.065+0800	INFO	go-catch/main.go:238	监控器已关闭
+2026-05-17T21:57:05.066+0800	INFO	runtime/proc.go:290	程序已退出

@@ -41,12 +41,10 @@ func main() {
     var jobParser core.Parser
 
     if cfg.DataSource == config.DataSourceMock {
-        // 使用 Mock 数据源（用于测试和演示）
         jobFetcher = fetcher.NewMockFetcher(500 * time.Millisecond)
         jobParser = parser.NewMockParser()
         logger.Log.Info("使用 Mock 数据源(模拟数据)")
     } else {
-        // 使用真实数据源（51job）
         jobFetcher = fetcher.NewJob51Fetcher(cfg.RequestTimeout)
         jobParser = parser.NewJob51Parser([]string{"go", "golang"})
         logger.Log.Info("使用真实数据源(51job)")
@@ -58,7 +56,6 @@ func main() {
     if cfg.DataSource == config.DataSourceReal {
         switch cfg.ProxyMode {
         case config.ModeSingle:
-            // 单代理模式
             logger.Log.Info("使用单代理模式",
                 zap.String("proxy_url", cfg.ProxyURL),
             )
@@ -69,7 +66,6 @@ func main() {
             }
 
         case config.ModePool:
-            // 代理池模式
             logger.Log.Info("正在初始化代理池...")
 
             var proxyList []*proxy.Proxy
@@ -117,10 +113,12 @@ func main() {
         }
     }
 
-    // 创建存储器
+    // ========== 创建存储层（支持 Redis + MySQL 组合） ==========
     var jobStorage core.Storage
     var mysqlStorage *storage.MySQLStorage
+    var redisStorage *storage.RedisStorage
 
+    // 1. 初始化 MySQL（如果启用）
     if cfg.DBEnabled {
         logger.Log.Info("正在连接 MySQL...")
         mysqlCfg := storage.MySQLConfig{
@@ -134,14 +132,38 @@ func main() {
         mysqlStorage, err = storage.NewMySQLStorage(mysqlCfg)
         if err != nil {
             logger.Log.Error("MySQL 连接失败，降级使用内存存储", zap.Error(err))
-            jobStorage = storage.NewMemoryStorage()
+            mysqlStorage = nil
         } else {
-            jobStorage = mysqlStorage
             logger.Log.Info("MySQL 存储初始化完成")
         }
+    }
+
+    // 2. 初始化 Redis（如果启用）
+    if cfg.Redis.Enabled {
+        logger.Log.Info("正在连接 Redis...")
+        redisStorage, err = storage.NewRedisStorage(cfg.Redis)
+        if err != nil {
+            logger.Log.Error("Redis 连接失败，将不使用 Redis 缓存", zap.Error(err))
+            redisStorage = nil
+        } else {
+            logger.Log.Info("Redis 存储初始化完成")
+        }
+    }
+
+    // 3. 组合存储层（优先级：Redis → MySQL → 内存）
+    if redisStorage != nil && mysqlStorage != nil {
+        // 使用 Redis 作为去重缓存，MySQL 作为持久化存储
+        jobStorage = storage.NewTieredStorage(redisStorage, mysqlStorage)
+        logger.Log.Info("使用分层存储(Redis 缓存 + MySQL 持久化)")
+    } else if mysqlStorage != nil {
+        jobStorage = mysqlStorage
+        logger.Log.Info("使用 MySQL 存储")
+    } else if redisStorage != nil {
+        jobStorage = redisStorage
+        logger.Log.Info("使用 Redis 存储（仅去重，无持久化）")
     } else {
         jobStorage = storage.NewMemoryStorage()
-        logger.Log.Info("存储器初始化完成")
+        logger.Log.Info("使用内存存储")
     }
 
     // 创建通知器
@@ -183,6 +205,13 @@ func main() {
             }
         }
 
+        // 关闭 Redis 连接
+        if redisStorage != nil {
+            if err := redisStorage.Close(); err != nil {
+                logger.Log.Error("关闭 Redis 连接失败", zap.Error(err))
+            }
+        }
+
         cancel()
     }()
 
@@ -199,6 +228,10 @@ func main() {
             zap.String("mode", string(cfg.ProxyMode)),
         )
     }
+    logger.Log.Info("存储模式",
+        zap.Bool("mysql", cfg.DBEnabled),
+        zap.Bool("redis", cfg.Redis.Enabled),
+    )
     logger.Log.Info("==========================================")
 
     // 启动监控
